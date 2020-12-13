@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SoupOfYingyme</title>
+<style>
+body {background-image: url(./img/4011532_s.jpg)}
+table {
+	margin-left: auto;
+	margin-right: auto;
+	width: 60%;
+	font-size: 1.5rem;
+}
+textarea {
+	font-size: 100%;
+}
+</style>
+</head>
+<body>
+<table>
+<form method="post" action="/post" th:object="${formModel}">
+<tr><td><lable for="question">問題</lable></td>
+	<td><textarea name="question" th:value="*{question}" cols="46" rows="15" ></textarea></td></tr>
+<tr><td><label for="answer">解説</label></td>
+	<td><textarea name="answer" th:value="*{answer}" cols="46" rows="15"></textarea></td></tr>
+<tr><td></td><td><input type="submit" /></td></tr>
+</form>
+</table>
+</body>
+</html>

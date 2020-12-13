@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SoupoofYingyme</title>
+<style>
+body {background-image: url(./img/4011532_s.jpg)}
+h1 {
+	text-align: center;
+	font-weight: bold;
+}
+h2 {
+	text-align: center;
+	font-weight: bold;
+}
+h3 {
+	text-align: center;
+	font-weight: bold;
+}
+.question {
+	margin-left: auto;
+	margin-right: auto;
+	width: 60%;
+	background: white;
+	white-space: pre-wrap;
+	line-height: 1.7;
+}
+</style>
+</head>
+<body>
+<h1>ウミガメのスープ</h1>
+<a href="/post" method="get">問題登録</a>
+<h2>問題
+<a href="/">投稿順</a> <a href="/goodvertop">いいね順</a>
+</h2>
+<h3>いいね順</h3>
+<div class="question" th:each="obj:${questionlist}" >
+問題<p th:text = "${obj.question}"></p>
+解説<p th:text = "${obj.answer}"></p>
+<a  th:href="@{'/goodveraddgood/' + ${obj.id}}">good</a><di th:text = "${obj.good}" ></di>  
+</div>
+</body>
+</html>
