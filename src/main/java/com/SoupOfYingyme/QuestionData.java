@@ -20,7 +20,7 @@ public class QuestionData {
 	private String answer;
 	
 	@Column(nullable = false)
-	private Integer good = 0;
+	private int good = 0;
 	
 
 	public long getId() {

@@ -2,7 +2,9 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>SoupoofYingyme</title>
+<script th:src="@{/js/good.js}"></script>
+ 
+ <title>SoupoofYingyme</title>
 <style>
 body {background-image: url(./img/4011532_s.jpg)}
 h1 {
@@ -37,7 +39,7 @@ h3 {
 <div class="question" th:each="obj:${questionlist}" >
 問題<p th:text = "${obj.question}"></p>
 解説<p th:text = "${obj.answer}"></p>
-<a  th:href="@{'/addgood/' + ${obj.id}}">good</a><di th:text = "${obj.good}" ></di>  
+<input type="button" value="いいね" th:attr="onclick='addGood(' + ${obj.id} + ');'"/><span th:id="${obj.id}" th:text="${obj.good}"></span>
 </div>
 </body>
 </html>
