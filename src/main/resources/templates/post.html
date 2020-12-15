@@ -14,15 +14,23 @@ table {
 textarea {
 	font-size: 100%;
 }
+.err { color:red; }
 </style>
 </head>
 <body>
+<a href="/">トップへ</a>
 <table>
 <form method="post" action="/post" th:object="${formModel}">
 <tr><td><lable for="question">問題</lable></td>
-	<td><textarea name="question" th:value="*{question}" cols="46" rows="15" ></textarea></td></tr>
+	<td><textarea name="question" th:value="*{question}" cols="46" rows="15" ></textarea>
+	<div th:if="${#fields.hasErrors('question')}"
+		th:errors="*{question}" th:errorclass="err"></div>
+	</td></tr>
 <tr><td><label for="answer">解説</label></td>
-	<td><textarea name="answer" th:value="*{answer}" cols="46" rows="15"></textarea></td></tr>
+	<td><textarea name="answer" th:value="*{answer}" cols="46" rows="15"></textarea>
+	<div th:if="${#fields.hasErrors('answer')}"
+		th:errors="*{answer}" th:errorclass="err"></div>
+	</td></tr>
 <tr><td></td><td><input type="submit" /></td></tr>
 </form>
 </table>

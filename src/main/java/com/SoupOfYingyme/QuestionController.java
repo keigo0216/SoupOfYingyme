@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,9 +60,20 @@ public class QuestionController {
 
 	@RequestMapping(value = "/post", method = RequestMethod.POST)
 	@Transactional(readOnly = false)
-	public ModelAndView post(@ModelAttribute("formModel") QuestionData questiondata, ModelAndView mav) {
-		repository.saveAndFlush(questiondata);
-		return new ModelAndView("redirect:/");
+	public ModelAndView post(
+			@ModelAttribute("formModel") @Validated QuestionData questiondata, 
+			BindingResult result,
+			ModelAndView mav) {
+		ModelAndView res = null;
+		if (!result.hasErrors()) {
+			repository.saveAndFlush(questiondata);
+			res = new ModelAndView("redirect:/");
+		} else {
+			mav.setViewName("post");
+			mav.addObject("msg", "値が不適切です");
+			res = mav;
+		}
+		return res;
 	}
 
 	@RequestMapping(value = "/addgood/{num}")

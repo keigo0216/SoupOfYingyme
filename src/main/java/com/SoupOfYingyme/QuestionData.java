@@ -5,18 +5,29 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
+import com.sun.istack.NotNull;
 
 @Entity
 public class QuestionData {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column
+	@NotNull
 	private long id;
 	
-	@Column(length = 300, nullable = false)
+	@Column(nullable = false)
+	@NotBlank(message="空白は不可です。")
+	@Size(max=300, message="文字数は300以下です。")
 	private String question;
 	
-	@Column(length = 3000, nullable = false)
+	@Column(nullable = false)
+	@NotBlank(message="空白は不可です。")
+	@Size(max = 300, message="文字数は300以下です。")
 	private String answer;
 	
 	@Column(nullable = false)
