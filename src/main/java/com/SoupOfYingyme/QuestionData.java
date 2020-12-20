@@ -1,15 +1,19 @@
 package com.SoupOfYingyme;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import com.SoupOfYingyme.login.Account;
 import com.sun.istack.NotNull;
 
 @Entity
@@ -33,9 +37,19 @@ public class QuestionData {
 	@Column(nullable = false)
 	private int good = 0;
 	
+	@ManyToMany
+	private Set<Account> good_account;
 
 	public long getId() {
 		return id;
+	}
+
+	public Set<Account> getGood_account() {
+		return good_account;
+	}
+
+	public void setGood_account(Set<Account> good_account) {
+		this.good_account = good_account;
 	}
 
 	public void setId(long id) {
@@ -62,7 +76,7 @@ public class QuestionData {
 		return good;
 	}
 
-	public void setGood(Integer good) {
+	public void setGood(int good) {
 		this.good = good;
 	}
 

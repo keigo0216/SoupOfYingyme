@@ -5,11 +5,15 @@ import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.SoupOfYingyme.login.Account;
+import com.SoupOfYingyme.login.AccountRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -36,6 +42,9 @@ public class QuestionController {
 
 	@Autowired
 	private QuestionDataService service;
+	
+	@Autowired
+	AccountRepository accountRepository;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView top(ModelAndView mav) {
@@ -93,17 +102,38 @@ public class QuestionController {
 	public String test(@RequestParam("id") String id) {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(principal instanceof UserDetails) {
+			User user = (User)principal;
+			Account account = accountRepository.findByUsername(user.getUsername());
+			
 			Optional<QuestionData> questionData = repository.findById(Long.valueOf(id));
 			if (questionData == null) {
-			return null;
+				return null;
+			} 
+			QuestionData question = questionData.get();
+			
+			
+			if(!question.getGood_account().contains(account)) {
+				
+				
+			
+			
+				int goodPoints = questionData.get().getGood();
+				goodPoints++;
+				questionData.get().setGood(goodPoints);
+			
+			
+				Set<Account> good_account = questionData.get().getGood_account();
+				good_account.add(account);
+				question.setGood_account(good_account);
+			
+				repository.saveAndFlush(questionData.get());
+			
+				questionData.get().setQuestion(encode(question.getQuestion()));
+				questionData.get().setAnswer(encode(question.getAnswer()));
+				return getJson(question);
+			} else {
+				return " ";
 			}
-			int goodPoints = questionData.get().getGood();
-			goodPoints++;
-			questionData.get().setGood(goodPoints);
-			repository.saveAndFlush(questionData.get());
-			questionData.get().setQuestion(encode(questionData.get().getQuestion()));
-			questionData.get().setAnswer(encode(questionData.get().getAnswer()));
-			return getJson(questionData.get());
 		} else {
 			return "";
 		}

@@ -8,7 +8,7 @@ function addGood(id) {
 		if(request.readyState === 4 && request.status === 200) {
 			if(request.responseText == "") {
 				alert("ログインしてください");
-			}
+			} 
 			
 			const questionData = JSON.parse(request.responseText);
 			document.getElementById(id).textContent = questionData.good;

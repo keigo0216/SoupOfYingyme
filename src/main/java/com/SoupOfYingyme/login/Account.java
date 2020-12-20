@@ -1,29 +1,34 @@
 package com.SoupOfYingyme.login;
 
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+
+import com.SoupOfYingyme.QuestionData;
 
 @Entity
 public class Account {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-	
 	private String username;
 	
 	private String password;
 	
 	private String role = "USER";
 	
+	@ManyToMany
+	private Set<QuestionData> good_question;
 	
-	public Long getId() {
-		return id;
+	public Set<QuestionData> getGood_question() {
+		return good_question;
 	}
-	public void setId(Long id) {
-		this.id = id;
+	public void setGood_question(Set<QuestionData> good_question) {
+		this.good_question = good_question;
 	}
+	
 	public String getUsername() {
 		return username;
 	}
