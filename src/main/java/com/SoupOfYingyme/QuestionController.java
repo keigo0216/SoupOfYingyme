@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
-import javax.security.auth.message.callback.PrivateKeyCallback.Request;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -38,10 +39,18 @@ public class QuestionController {
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView top(ModelAndView mav) {
-		mav.setViewName("top");
-		List<QuestionData> list = service.getAllIdDesk();
-		mav.addObject("questionlist", list);
-		return mav;
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(principal instanceof UserDetails) {
+			mav.setViewName("login_top");
+			List<QuestionData> list = service.getAllIdDesk();
+			mav.addObject("questionlist", list);			
+			return mav;
+		} else {
+			mav.setViewName("top");
+			List<QuestionData> list = service.getAllIdDesk();
+			mav.addObject("questionlist", list);
+			return mav;
+		}
 	}
 
 	@RequestMapping(value = "/goodvertop", method = RequestMethod.GET)
@@ -76,28 +85,28 @@ public class QuestionController {
 		return res;
 	}
 
-	@RequestMapping(value = "/addgood/{num}")
-	@Transactional(readOnly = false)
-	public ModelAndView addGood(@PathVariable long num, ModelAndView mav) {
-		service.addGood(num);
-		return new ModelAndView("redirect:/");
-	}
+	
 
 	
 	@GetMapping("/addGood")
 	@ResponseBody
 	public String test(@RequestParam("id") String id) {
-		Optional<QuestionData> questionData = repository.findById(Long.valueOf(id));
-		if (questionData == null) {
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(principal instanceof UserDetails) {
+			Optional<QuestionData> questionData = repository.findById(Long.valueOf(id));
+			if (questionData == null) {
 			return null;
+			}
+			int goodPoints = questionData.get().getGood();
+			goodPoints++;
+			questionData.get().setGood(goodPoints);
+			repository.saveAndFlush(questionData.get());
+			questionData.get().setQuestion(encode(questionData.get().getQuestion()));
+			questionData.get().setAnswer(encode(questionData.get().getAnswer()));
+			return getJson(questionData.get());
+		} else {
+			return "";
 		}
-		int goodPoints = questionData.get().getGood();
-		goodPoints++;
-		questionData.get().setGood(goodPoints);
-		repository.saveAndFlush(questionData.get());
-		questionData.get().setQuestion(encode(questionData.get().getQuestion()));
-		questionData.get().setAnswer(encode(questionData.get().getAnswer()));
-		return getJson(questionData.get());
 	}
 
 	private String encode(String data) {
@@ -144,6 +153,10 @@ public class QuestionController {
 				"アントニーとクレオパトラが、エジプトの屋敷の床で息絶えていた。屍のそばには、割れた金魚鉢。彼らの体に傷はなく、毒を飲んだ形跡もない。死亡時、屋敷には誰も居なかった。アントニーとクレオパトラはどうやって死んだのだろうか？");
 		q3.setAnswer("アントニーとクレオパトラは金魚だった。事故で金魚鉢が割れ、2匹は不運にも床の上で死んでしまったのだ。");
 		repository.saveAndFlush(q3);
+	
+		
 	}
+
+	
 
 }

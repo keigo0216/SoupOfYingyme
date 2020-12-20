@@ -1,13 +1,13 @@
 function addGood(id) {
-		
+	
+	
 	let request = new XMLHttpRequest();
 	request.open("get", "/addGood?id=" + id, true);
 	request.send(null);
 	request.onload = function (event) {
 		if(request.readyState === 4 && request.status === 200) {
-			if(!request.responseText) {
-				alert("該当するデータはありませんでした");
-				return;
+			if(request.responseText == "") {
+				alert("ログインしてください");
 			}
 			
 			const questionData = JSON.parse(request.responseText);
@@ -21,3 +21,4 @@ function addGood(id) {
 		alert("エラー発生");
 	}
 }
+

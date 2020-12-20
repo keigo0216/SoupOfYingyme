@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <script th:src="@{/js/good.js}"></script>
- 
+
  <title>SoupoofYingyme</title>
 <style>
 body {background-image: url(./img/4011532_s.jpg)}
@@ -31,6 +31,10 @@ h3 {
 </head>
 <body>
 <h1>ウミガメのスープ</h1>
+<form action="/login" method="get">
+	<button type="submit">ログイン</button>
+</form>
+<a href="/register" method="get">ユーザー登録</a>
 <a href="/post" method="get">問題登録</a>
 <h2>問題
 <a href="/">投稿順</a> <a href="/goodvertop">いいね順</a>

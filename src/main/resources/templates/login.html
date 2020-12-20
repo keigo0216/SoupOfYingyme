@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SoupOfYingyme</title>
+</head>
+<body>
+<a href="/">トップへ</a>
+<a href="/register">ユーザー登録</a>
+<form th:action="@{/login}" method="post">
+	<input type="text" id="username" name="username" placeholder="username"/>
+	<input type="password" id="password" name="password" placeholder="password">
+	<button type="submit">ログイン</button>
+</form>
+<p th:if="${param.error}">ログインに失敗しました</p>
+<p th:if="${param.logout}">ログアウトしました</p>
+</body>
+</html>

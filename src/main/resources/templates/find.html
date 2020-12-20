@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<table>
+<form th:action="@{/find}" method="post">
+	<tr><td>FIND:</td>
+	<td><input type="text" name="fstr" size="20" th:value="${value}"/></td></tr>
+	<tr><td></td><td><input type="submit" /></td></tr>
+</form>
+<div th:each="obj:${userlist}">
+ユーザー
+	<p th:text="${obj.username}"></p>
+	<p th:text="${obj.password}"></p>
+	<p th:text="${obj.role}"></p>
+ </div>
+</table>
+</body>
+</html>

@@ -20,7 +20,7 @@ textarea {
 <body>
 <a href="/">トップへ</a>
 <table>
-<form method="post" action="/post" th:object="${formModel}">
+<form method="post" th:action="@{/post}" th:object="${formModel}">
 <tr><td><lable for="question">問題</lable></td>
 	<td><textarea name="question" th:value="*{question}" cols="46" rows="15" ></textarea>
 	<div th:if="${#fields.hasErrors('question')}"

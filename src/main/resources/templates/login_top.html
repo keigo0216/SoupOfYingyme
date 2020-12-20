@@ -2,8 +2,9 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<script th:src="@{js/good.js}"></script>
-<title>SoupoofYingyme</title>
+<script th:src="@{/js/good.js}"></script>
+
+ <title>SoupoofYingyme</title>
 <style>
 body {background-image: url(./img/4011532_s.jpg)}
 h1 {
@@ -37,7 +38,7 @@ h3 {
 <h2>問題
 <a href="/">投稿順</a> <a href="/goodvertop">いいね順</a>
 </h2>
-<h3>いいね順</h3>
+<h3>投稿順</h3>
 <div class="question" th:each="obj:${questionlist}" >
 問題<p th:text = "${obj.question}"></p>
 解説<p th:text = "${obj.answer}"></p>
