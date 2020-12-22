@@ -35,10 +35,20 @@ public class QuestionData {
 	private String answer;
 	
 	@Column(nullable = false)
-	private int good = 0;
+	private long good = 0;
 	
 	@ManyToMany
 	private Set<Account> good_account;
+	
+	public void addGood_account(Account account) {
+		this.good_account.add(account);
+		account.getGood_question().add(this);
+	}
+	
+	public void deleteGood_account(Account account) {
+		this.good_account.remove(account);
+		account.getGood_question().remove(this);
+	}
 
 	public long getId() {
 		return id;
@@ -72,11 +82,11 @@ public class QuestionData {
 		this.answer = answer;
 	}
 	
-	public Integer getGood() {
+	public long getGood() {
 		return good;
 	}
 
-	public void setGood(int good) {
+	public void setGood(long good) {
 		this.good = good;
 	}
 

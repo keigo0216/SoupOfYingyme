@@ -2,6 +2,7 @@ package com.SoupOfYingyme;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +46,8 @@ public class QuestionController {
 	
 	@Autowired
 	AccountRepository accountRepository;
+	
+	Long questionCounter = (long)0;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView top(ModelAndView mav) {
@@ -85,6 +88,7 @@ public class QuestionController {
 		ModelAndView res = null;
 		if (!result.hasErrors()) {
 			repository.saveAndFlush(questiondata);
+			questionCounter ++;
 			res = new ModelAndView("redirect:/");
 		} else {
 			mav.setViewName("post");
@@ -94,18 +98,34 @@ public class QuestionController {
 		return res;
 	}
 
-	
-
-	
-	@GetMapping("/addGood")
+	@GetMapping("/numberofQ")
 	@ResponseBody
-	public String test(@RequestParam("id") String id) {
+	public List<QuestionList> numberofQ(){
+		List<QuestionList> list = new ArrayList<>();
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(principal instanceof UserDetails) {
 			User user = (User)principal;
 			Account account = accountRepository.findByUsername(user.getUsername());
+			List<QuestionData> questionList = new ArrayList<QuestionData>(account.getGood_question());
 			
+			for(QuestionData questionData : questionList) {
+				list.add(new QuestionList(questionData.getId()));
+			}
+			return list;
+		} else {
+			return list;
+		}
+	}
+	
+	@GetMapping("/addGood")
+	@ResponseBody
+	public String addGood(@RequestParam("id") String id) {
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(principal instanceof UserDetails) {
+			User user = (User)principal;
+			Account account = accountRepository.findByUsername(user.getUsername());
 			Optional<QuestionData> questionData = repository.findById(Long.valueOf(id));
+			
 			if (questionData == null) {
 				return null;
 			} 
@@ -114,23 +134,20 @@ public class QuestionController {
 			
 			if(!question.getGood_account().contains(account)) {
 				
-				
-			
-			
-				int goodPoints = questionData.get().getGood();
+				long goodPoints = questionData.get().getGood();
 				goodPoints++;
 				questionData.get().setGood(goodPoints);
-			
-			
-				Set<Account> good_account = questionData.get().getGood_account();
-				good_account.add(account);
-				question.setGood_account(good_account);
-			
+				
+				question.addGood_account(account);
+				
 				repository.saveAndFlush(questionData.get());
-			
-				questionData.get().setQuestion(encode(question.getQuestion()));
-				questionData.get().setAnswer(encode(question.getAnswer()));
-				return getJson(question);
+				accountRepository.saveAndFlush(account);
+				
+				JsonQuestionData jsonQuestionData = new JsonQuestionData(question.getId(),question.getQuestion(),question.getAnswer(), question.getGood());
+				
+				jsonQuestionData.setQuestion(encode(jsonQuestionData.getQuestion()));
+				jsonQuestionData.setAnswer(encode(jsonQuestionData.getAnswer()));
+				return getJson(jsonQuestionData);
 			} else {
 				return " ";
 			}
@@ -152,11 +169,11 @@ public class QuestionController {
 		return retVal;
 	}
 
-	private String getJson(QuestionData questionData) {
+	private String getJson(JsonQuestionData jsonQuestionData) {
 		String retVal = null;
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
-			retVal = objectMapper.writeValueAsString(questionData);
+			retVal = objectMapper.writeValueAsString(jsonQuestionData);
 		} catch (JsonProcessingException e) {
 			System.err.println(e);
 		}

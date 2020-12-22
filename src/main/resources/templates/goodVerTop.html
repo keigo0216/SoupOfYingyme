@@ -44,4 +44,5 @@ h3 {
 <input type="button" value="いいね" th:attr="onclick='addGood(' + ${obj.id} + ');'"/><span th:id="${obj.id}" th:text="${obj.good}"></span>
 </div>
 </body>
+<script th:src="@{/js/good_color.js}"></script>
 </html>

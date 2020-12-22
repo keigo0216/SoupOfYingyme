@@ -1,6 +1,5 @@
 function addGood(id) {
 	
-	
 	let request = new XMLHttpRequest();
 	request.open("get", "/addGood?id=" + id, true);
 	request.send(null);
@@ -9,9 +8,11 @@ function addGood(id) {
 			if(request.responseText == "") {
 				alert("ログインしてください");
 			} 
-			
-			const questionData = JSON.parse(request.responseText);
-			document.getElementById(id).textContent = questionData.good;
+			else {
+			const jsonQuestionData = JSON.parse(request.responseText);
+			document.getElementById(id).textContent = jsonQuestionData.good;
+			document.getElementById(id).style.color = "blue";
+			}
 		}else{
 			alert("エラー発生");
 		}

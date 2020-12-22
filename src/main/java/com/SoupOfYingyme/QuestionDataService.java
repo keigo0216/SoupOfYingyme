@@ -41,7 +41,7 @@ public class QuestionDataService {
 	
 	public void addGood(Long id) {
 		Optional<QuestionData> questiondata = repository.findById(id);
-		int goodpoint = questiondata.get().getGood();
+		long goodpoint = questiondata.get().getGood();
 		goodpoint++;
 		questiondata.get().setGood(goodpoint);
 		repository.saveAndFlush(questiondata.get());

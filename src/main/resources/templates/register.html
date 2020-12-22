@@ -2,15 +2,22 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>SoupOfYingyme</title>
+<style>
+body {background-image: url(./img/4011532_s.jpg)}
+.err { color:red;}
+</style>
 </head>
 <body>
 <table>
 <form method="post" th:action="@{/register}" th:object="${accountModel}">
 <tr><td><label for="name">名前</label></td>
-	<td><input type="text" name="username" th:value="*{username}" /></td></tr>
+	<td><div th:text="${msg}" class = "err"></div>
+		<input type="text" name="username" th:value="*{username}" />
+		<div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" th:errorclass="err"></div></td></tr>
 <tr><td><label for="password">パスワード</label></td>
 	<td><input type="password" name="password" th:value="*{password}">
+		<div th:if = "${#fields.hasErrors('password')}" th:errors="*{password}" th:errorclass="err"></div></td></tr>
 <tr><td></td><td><input type="submit" /></td></tr>
 </form>
 <p th:if="${param.error}">ログインに失敗しました</p>

@@ -1,5 +1,6 @@
 package com.SoupOfYingyme.login;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
@@ -8,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,12 +38,28 @@ public class LoginController {
 	
 	
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	@Transactional(readOnly=false)
 	public ModelAndView registerform(
-			@ModelAttribute("accountModel") Account account,
+			@ModelAttribute("accountModel") @Validated Account account,
+			BindingResult result,
 			ModelAndView mav) {
-		account.setPassword(passwordEncoder.encode(account.getPassword()));
-		accountRepository.saveAndFlush(account);
-		return new ModelAndView("redirect:/");
+		ModelAndView res = null;
+		if(!result.hasErrors()) {
+			if(accountRepository.findByUsername(account.getUsername()) == null) {
+				account.setPassword(passwordEncoder.encode(account.getPassword()));
+				accountRepository.saveAndFlush(account);
+				res = new ModelAndView("redirect:/login");
+			} else {
+				mav.setViewName("register");
+				mav.addObject("msg", "このユーザー名は登録されています");
+				res = mav;
+			}
+		} else {
+			mav.setViewName("register");
+			res = mav;
+		}
+		
+		return res;
 	}
 	
 	@RequestMapping(value="/find", method = RequestMethod.GET)
